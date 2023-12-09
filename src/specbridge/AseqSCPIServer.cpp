@@ -147,8 +147,18 @@ bool AseqSCPIServer::OnCommand(
 {
 	if(BridgeSCPIServer::OnCommand(line, subject, cmd, args))
 		return true;
+	else if(cmd == "EXPOSURE")
+	{
+		lock_guard<mutex> lock(g_mutex);
 
-	//TODO: implement more commands
+		//convert fs to 10us ticks so e-10
+		int err;
+		double exposure = stod(args[0]) * 1e-10;
+		if(0 != (err = setExposure(exposure, 0, &g_hDevice)))
+			LogError("failed to set exposure, code %d\n", err);
+	}
+	else
+		LogError("Unrecognized command %s\n", line.c_str());
 
 	return true;
 }
