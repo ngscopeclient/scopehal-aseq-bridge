@@ -83,6 +83,7 @@ void OnQuit(int signal);
 uintptr_t g_hDevice = 0;
 
 int g_numPixels = 3653;
+bool g_triggerArmed;
 
 void ReadCalData();
 
@@ -194,31 +195,6 @@ int main(int argc, char* argv[])
 		LogError("failed to set trigger mode, code %d\n", err);
 		return 1;
 	}
-
-	//Start capturing
-	if(0 != (err = triggerAcquisition(&g_hDevice)))
-	{
-		LogError("failed to trigger acquisition, code %d\n", err);
-		return 1;
-	}
-
-	//get the frame data
-	uint16_t* framePixels = new uint16_t[framesize];
-	if(0 != (err = getFrame(framePixels, 0xffff, &g_hDevice)))
-	{
-		LogError("failed to get frame, code %d\n", err);
-		return 1;
-	}
-
-	//frame data seems to be *mirrored*? shortest wavelengths at right
-
-	//Dump frame data
-	/*LogDebug("wavelength,counts\n");
-	for(int i=g_numPixels-1; i>=0; i--)
-		LogDebug("%.0f,%d\n", g_wavelengths[i]*1000, (int)framePixels[i+32]);*/
-
-	//Clean up
-	delete[] framePixels;
 
 	//Set up signal handlers
 #ifdef _WIN32

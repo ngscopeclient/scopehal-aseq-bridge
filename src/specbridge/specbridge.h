@@ -62,4 +62,9 @@ extern volatile bool g_waveformThreadQuit;
 extern std::vector<float> g_wavelengths;
 extern std::vector<float> g_sensorResponse;
 
+extern bool g_triggerArmed;
+extern bool g_triggerOneShot;
+
+extern uintptr_t g_hDevice;
+
 #endif

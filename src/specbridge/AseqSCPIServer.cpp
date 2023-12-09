@@ -39,6 +39,9 @@
 
 		POINTS?
 			Returns the number of pixels in the spectrometer
+
+		WAVELENGTHS?
+			Returns a list of wavelengths for each spectral bin
  */
 
 #include "specbridge.h"
@@ -51,6 +54,8 @@
 using namespace std;
 
 mutex g_mutex;
+
+bool g_triggerOneShot = false;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction / destruction
@@ -140,6 +145,11 @@ bool AseqSCPIServer::OnCommand(
 	const string& cmd,
 	const vector<string>& args)
 {
+	if(BridgeSCPIServer::OnCommand(line, subject, cmd, args))
+		return true;
+
+	//TODO: implement more commands
+
 	return true;
 }
 
@@ -156,14 +166,18 @@ BridgeSCPIServer::ChannelType AseqSCPIServer::GetChannelType(size_t /*channel*/)
 
 void AseqSCPIServer::AcquisitionStart(bool oneShot)
 {
+	g_triggerArmed = true;
+	g_triggerOneShot = oneShot;
 }
 
 void AseqSCPIServer::AcquisitionForceTrigger()
 {
+	g_triggerArmed = true;
 }
 
 void AseqSCPIServer::AcquisitionStop()
 {
+	g_triggerArmed = false;
 }
 
 void AseqSCPIServer::SetChannelEnabled(size_t /*chIndex*/, bool /*enabled*/)
