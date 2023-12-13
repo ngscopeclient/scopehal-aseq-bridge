@@ -86,11 +86,9 @@ void WaveformServerThread()
 				g_triggerArmed = false;
 		}
 
-		//Frame data seems to be *mirrored*! shortest wavelengths at right
-		//But we'll fix that clientside. Apply flatness correction server side, though
-		//TODO: what about absolute irradiance corrections?
+		//Frame data seems to be *mirrored* - shortest wavelengths at right... But we'll fix that clientside.
 		for(int i=0; i<g_numPixels; i++)
-			frameFlattened[i] = /* g_sensorResponse[i] **/ framePixels[i+32];
+			frameFlattened[i] = framePixels[i+32];
 
 		//Send the flattened data to the client
 		if(!client.SendLooped((uint8_t*)frameFlattened, g_numPixels * sizeof(float)))

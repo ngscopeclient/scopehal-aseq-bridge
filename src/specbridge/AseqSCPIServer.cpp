@@ -42,6 +42,9 @@
 
 		WAVELENGTHS?
 			Returns a list of wavelengths for each spectral bin
+
+		FLATCAL?
+			Returns flatness correction data (block 2 of cal file)
  */
 
 #include "specbridge.h"
@@ -92,6 +95,17 @@ bool AseqSCPIServer::OnQuery(
 			wavelengths += tmp;
 		}
 		SendReply(wavelengths);
+	}
+	else if(cmd == "FLATCAL")
+	{
+		string flatcal;
+		char tmp[128];
+		for(int i=0; i<g_numPixels; i++)
+		{
+			snprintf(tmp, sizeof(tmp), "%.3f,", g_sensorResponse[i]);
+			flatcal += tmp;
+		}
+		SendReply(flatcal);
 	}
 	else
 	{
