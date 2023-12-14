@@ -89,7 +89,13 @@ void ReadCalData();
 
 //Wavelengths, in nm, of each spectral bin
 vector<float> g_wavelengths;
+
+//sensor flatness cal
 vector<float> g_sensorResponse;
+
+//abs irradiance cal
+vector<float> g_absResponse;
+float g_absCal = 1;
 
 int main(int argc, char* argv[])
 {
@@ -297,7 +303,10 @@ void ReadCalData()
 	LogDebug("Mid pixel norm coeff is %.3f\n", g_sensorResponse[2365]);
 	LogDebug("Last pixel norm coeff is %.3f\n", g_sensorResponse[g_numPixels-1]);
 
-	//TODO: read absolute irradiance data, if present
+	//Read absolute irradiance data, if present
+	g_absCal = atof(lines[1].c_str());
+	for(int i=0; i<g_numPixels; i++)
+		g_absResponse.push_back(atof(lines[i+13+2*g_numPixels].c_str()));
 }
 
 /**

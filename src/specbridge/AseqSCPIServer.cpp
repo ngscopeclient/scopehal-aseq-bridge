@@ -45,6 +45,12 @@
 
 		FLATCAL?
 			Returns flatness correction data (block 2 of cal file)
+
+		IRRCOEFF?
+			Returns irradiance correction coefficient (line 2 of cal file)
+
+		IRRCAL?
+			Returns irradiance correction data (block 3 of cal file)
  */
 
 #include "specbridge.h"
@@ -106,6 +112,19 @@ bool AseqSCPIServer::OnQuery(
 			flatcal += tmp;
 		}
 		SendReply(flatcal);
+	}
+	else if(cmd == "IRRCOEFF")
+		SendReply(to_string(g_absCal));
+	else if(cmd == "IRRCAL")
+	{
+		string irrcal;
+		char tmp[128];
+		for(int i=0; i<g_numPixels; i++)
+		{
+			snprintf(tmp, sizeof(tmp), "%.3f,", g_absResponse[i]);
+			irrcal += tmp;
+		}
+		SendReply(irrcal);
 	}
 	else
 	{
